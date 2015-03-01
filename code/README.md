@@ -17,7 +17,7 @@ Evaluation on the [Berkeley Segmentation Dataset (BSDS500)](http://www.eecs.berk
 3. Compile all superpixel algorithms using the instructions in `superpixels-revisited/README.md`.
 4. Set up the extended version of the Berkeley Segmentation Benchmark [5] according to `extended-berkeley-segmentation-benchmark/README.md`.
 
-All command line tools in `superpixels-revisited` provide a `--csv` option in order to save all generated superpixel segmentations in the form of CSV files (also use `--output my_output_folder/`). The extended Berkeley Segmentation Benchmark provides [`extended-berkeley-segmentation-benchmark/convert_csv_bsd.m`]() used to convert CSV files to the BSDS500 groundtruth format. For further instructions on using the extended Berkeley Segmentation Benchmark, see [`extended-berkeley-segmentation-benchmark/README.md`](https://github.com/davidstutz/extended-berkeley-segmentation-benchmark).
+All command line tools in `superpixels-revisited` provide a `--csv` option in order to save all generated superpixel segmentations in the form of CSV files (also use `--output my_output_folder/`). The extended Berkeley Segmentation Benchmark provides [`extended-berkeley-segmentation-benchmark/convert_csv_bsd.m`](https://github.com/davidstutz/extended-berkeley-segmentation-benchmark/blob/master/benchmarks/convert_csv_bsd.m) used to convert CSV files to the BSDS500 groundtruth format. For further instructions on using the extended Berkeley Segmentation Benchmark, see [`extended-berkeley-segmentation-benchmark/README.md`](https://github.com/davidstutz/extended-berkeley-segmentation-benchmark).
 
 ## File Index
 
