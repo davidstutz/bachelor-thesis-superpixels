@@ -1,0 +1,69 @@
+\chapter{Berkeley Segmentation Benchmark}
+\label{chapter:appendix-berkeley-segmentation-benchmark}
+
+Arbel\'aez \etal \cite{ArbelaezMaireFowlkesMalik:2011} provide a benchmark implemented in MatLab together with the BSDS500. Although most of the provided measures are not suitable for evaluating superpixel algorithms, they provide a framework which can easily be extended to evaluate the quality of superpixel segmentations. Note that these measures are not intended to assess superpixel algorithms but are usually used to evaluate classical segmentation algorithms or contour detectors. This chapter discusses the provided measures.
+
+\section{Precision-Recall Framework}
+\label{section:appendix-berkeley-segmentation-benchmark-recall}
+
+Introduced in \cite{MartinFowlkesMalik:2004}, the Precision-Recall Framework is used to evaluate contour detectors given a ground truth segmentation. By treating region boundaries of a segmentation as contours, the framework can be applied to evaluate segmentation algorithms as well \cite{ArbelaezMaireFowlkesMalik:2011}. The framework relies on the following definitions (we follow \cite{NeubertProtzel:2012}): Let $G$ be a ground truth segmentation and $S$ be a given segmentation to evaluate. Then, define:
+\begin{description}
+ 	\item[True Positives, $TP(S, G)$:] Boundary pixels in $G$ for which there is a boundary pixel in $S$ in range~$r$.
+ 	\item[False Positives, $FP(S, G)$:] Boundary pixels in $S$ for which there is no boundary pixel in $G$ in range~$r$.
+	\item[False Negatives, $FN(S, G)$:] Boundary pixels in $G$ for which there is no boundary pixel in $S$ in range~$r$.
+\end{description}
+The definitions already solve the problem of boundary correspondence\footnote{The boundary correspondence problem describes the problem of finding the boundary pixel in the segmentation $S$ corresponding to a given boundary pixel in the ground truth $G$, see \cite{MartinFowlkesMalik:2004}.} as discussed in \cite{MartinFowlkesMalik:2004} by allowing a small displacement defined by the range $r$.
+
+With the above definitions we can define the Boundary Precision $Pre(S,G)$ and the Boundary Recall $Rec(S,G)$ of a segmentation $S$ with respect to a ground truth $G$:
+\begin{align}
+	Pre(S,G) = \frac{|TP(S, G)|}{|TP(S, G)| + |FP(S, G)|};\\
+	Rec(S,G) = \frac{|TP(S, G)|}{|TP(S, G)| + |FN(S, G)|}.
+\end{align}
+Precision relates the number of True Positives to the total number of boundary detections in $S$ (note that $TP(S, G) \cap FP(S, G) = \emptyset$ by definition). Recall, on the other hand, relates the number of True Positives to the total number of boundary pixels in $G$ and therefore quantifies the fraction of boundary pixels in $G$ which are correctly detected in $S$. The requirement that superpixels should adhere object boundaries relates to a high Boundary Recall. However, due to the oversegmentation, Boundary Precision is an unsuited measure for evaluating superpixel algorithms. This is because we encourage superpixel boundaries within objects, this means we typically get a high number of False Positives.
+%Based on Precision and Recall, the $F$-measure is defined by \cite{MartinFowlkesMalik:2004}:
+%\begin{align}
+%	F(S, G) = \frac{Rec(S, G)\cdot pre(S, G)}{\alpha Rec(S,G) + (1 - \alpha) Pre(S,G)}.
+%\end{align}
+%As Precision is unsuited for superpixel evaluation, the $F$-measure is so as well.
+
+\section{Variation of Information}
+
+Variation of Information was initially used for cluster comparison \cite{Meila:2005} and is defined based on the entropy and mutual information of a segmentation $S$ and a ground truth segmentation $G$:
+\begin{align}
+	H(S) &= -\sum_{S_j \in S} \frac{|S_j|}{N} \log \left(\frac{|S_j|}{N}\right),\\
+	I(S, G) &= \sum_{S_j \in S} \sum_{G_i \in G} \frac{|S_j \cap G_i|}{N} \log \left(\frac{|S_j \cap G_i|}{N} \frac{N}{|S_j|} \frac{N}{|G_i|} \right).
+\end{align}
+Then, the variation of information is given as
+\begin{align}
+	VI(S, G) = H(S) + H(G) - 2I(S, G).
+\end{align}
+As shown in \cite{Meila:2003}, $VI(S, G)$ is a metric. However, Variation of Information is not meaningful when evaluating superpixel algorithms. This is because the segment sizes $S_j$ and $G_i$ are not comparable in size. Even if a superpixel $S_j$ perfectly matches the underlying ground truth segment $G_i$, the intersection $S_j \cap G_i$ is usually only a small subset of $G_i$: $|S_j \cap G_i| \ll |G_i|$.
+
+\section{Probabilistic Rand Index}
+
+The Rand Index was originally proposed in \cite{Rand:1971} and the Probabilistic Rand Index was proposed in \cite{UnnikrishnanPantofaruHebert:2007}. The Probabilistic Rand Index is defined as
+\begin{align}
+	PRI(S, G) = \frac{1}{{N \choose 2}} \sum_{n \neq m} (c_{n,m}p_{n,m} + (1 - c_{n,m})(1 - p_{n,m}))
+\end{align}
+where $c_{n,m}$ describes the random event where the pixels $x_n$ and $x_m$ have the same label in $S$ and $G$ with probability $p_{n,m}$. For a detailed interpretation we refer to \cite{UnnikrishnanPantofaruHebert:2007}. This measure is implemented as shown in the appendix of \cite{UnnikrishnanPantofaruHebert:2007}:
+\begin{align}
+	c_{n,m} = 1 \Leftrightarrow s(x_n) = s(x_m);\\
+	p_{n,m} = 1 \Leftrightarrow g(x_n) = g(x_m);
+\end{align}
+where $g(x_m)$ denotes the label of pixel $x_m$ within the ground truth $G$. As stated in \cite{UnnikrishnanPantofaruHebert:2007}, this definition can easily be extended to the case of multiple ground truth segmentations $G_1,\ldots,G_5$. Now we consider $S$ to be a superpixel segmentation. Then we usually find multiple pixel pairs having the same label in the ground truth, but different labels in the superpixel segmentation. Therefore, the Probabilistic Rand Index is unsuited for evaluating superpixel algorithms.
+
+\section{Segmentation Covering}
+
+The Segmentation Covering is a measure based on the overlap of two segments $S_j$ and $G_i$ from a superpixel segmentation $S$ and a ground truth $G$ \cite{MartinFowlkesMalik:2004}:
+\begin{align}
+	O(S_j, G_i) = \frac{|S_j \cap G_i|}{|S_j \cup G_i|}.
+\end{align}
+Note that $O(S_j, G_i)$ equals one if and only if $S_j$ and $G_i$ are equal. Using the overlap we can define the Segmentation Covering of $G$ by $S$:
+\begin{align}
+	Cov(S \rightarrow G) = \frac{1}{N} \sum_{G_i \in G} |G_i| \max_{S_j \in S} \{O(G_i, S_j)\}.
+\end{align}
+Similarly, we define the Segmentation Covering of $S$ by $G$ as $Cov(G \rightarrow S)$. Consider $S$ to be a superpixel segmentation. Then, for the overlap we usually have
+\begin{align}
+	O(S_j, G_i) \ll 1
+\end{align}
+for most of the superpixels $S_j$. Therefore, both $Cov(S \rightarrow G)$ and $Cov(G \rightarrow S)$ are inappropriate for evaluating superpixel algorithms.	

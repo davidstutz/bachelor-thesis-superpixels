@@ -1,0 +1,495 @@
+\chapter{Related Work}
+\label{chapter:related-work}
+
+Research related to superpixel algorithms has seen a substantial growth during the last few years (see figure \ref{fig:related-work-superpixel-timeline}). Consequently, the literature on this topic is quite extensive. In this chapter, we try to cover the literature \textbf{to the best of our knowledge} and give a brief introduction to all superpixel algorithms evaluated in chapter \ref{chapter:evaluation}. We divide all algorithms presented in this chapter into those applicable to color images, those utilizing depth information and those used to oversegment point clouds. Furthermore, we review the literature devoted to comparing these approaches as well as suitable datasets and benchmarks.
+
+\section{Superpixel Segmentation}
+\label{section:related-work-superpixel-segmentation}
+
+Throughout the literature, superpixel algorithms are often categorized as either graph based methods or gradient ascent methods \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2012}. Both expect a color image $I : \ubar{W} \times \ubar{H} \rightarrow \mathbb{R}^3$, $\ubar{W} = \{1, \ldots, W\}$, with width $W$, height $H$ and $N = WH$ pixels to be given and aim to generate a superpixel segmentation
+\begin{align}
+	S = \{S_1,\ldots,S_K\}\quad \text{ with }\quad S_k \subseteq \ubar{W} \times \ubar{H}.
+\end{align}
+For this superpixel segmentation to be valid, we demand the superpixels $S_i$ to represent connected components \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009}. Additionally, we enforce the superpixels to be disjoint and resemble the whole image:
+\begin{align}
+	S_i \cap S_j = \emptyset\quad \text{ and }\quad \bigcup_{S_i \in S} S_i = \ubar{W} \times \ubar{H}.
+\end{align}
+Then, we can define the function $s: \ubar{W} \times \ubar{H} \rightarrow \ubar{K}$ assigning a unique superpixel to each pixel $x_n \in \ubar{W} \times \ubar{H}$.
+
+Graph based approaches construct an undirected, weighted graph $G = (V,E)$ with $V = \ubar{N}$ where each vertex $n$ corresponding to pixel $x_n$ is connected to the pixel's four direct neighbors\footnote{This resembles a $4$-connected graph. However, some approaches and applications use a $8$-connected graph, instead, where each pixel $x_n$ is connected to its diagonal neighbors as well.}. The weights $w_{n,m}$ are interpreted as elements of a weight matrix
+\begin{align}
+	\boldsymbol{w} = \left (w_{n,m}\right)_{n,m = 1}^N
+\end{align}
+where $w_{n,m}$ measures the similarity of neighboring pixels $x_n$ and $x_m$ and we set $w_{n,m} = 0$ for $(n,m) \notin E$. Typically, an energy based on the graph $G$ is proposed and optimized using graph cuts or similar techniques.
+
+Gradient ascent methods are commonly built around an energy as well, however, these methods are not based on a graph structure. Instead, they use a variety of different approaches to optimize the proposed energy in order to generate a superpixel segmentation. For example, clustering based approaches define the superpixel center of superpixel $S_i$ to be given by
+\begin{align}
+	\mu(S_i) = \frac{1}{|S_i|} \sum_{x_n \in S_i} x_n\quad \text{ and }\quad I(S_i) = \frac{1}{|S_i|} \sum_{x_n \in S_i} I(x_n).
+\end{align}
+Then, pixels are assigned to superpixels based on their similarity to the superpixel centers.
+
+Although the categorization into graph based and gradient ascent methods appears to be very coarse, a finer categorization lies not in the focus of this thesis. In the following we briefly introduce all superpixel algorithms evaluated in chapter \ref{chapter:evaluation}. The algorithms are sorted according to the year of their publication. Figure~\ref{fig:related-work-superpixel-timeline} shows a timeline of all superpixel algorithms.
+\begin{figure}[t!]
+	\centering
+	\begin{tikzpicture}
+		% line
+		\draw (0.25,0) -- (3,0);
+		\draw (3,-0.25) -- (3.25,0.25);
+		\draw (3.25,-0.25) -- (3.5,0.25);
+		\draw[-latex new,arrow head=0.15cm] (3.5,0) -- (14.5,0);
+		
+		% years
+		\draw (0.75,0.15) -- (0.75,-0.15);
+		\node at (0.75,-0.5){2003};
+		\draw (2,0.15) -- (2,-0.15);
+		\node at (2,-0.5){2004};
+		
+		\draw (4.5,0.15) -- (4.5,-0.15);
+		\node at (4.5,-0.5){2007};
+		\draw (5.75,0.15) -- (5.75,-0.15);
+		\node at (5.75,-0.5){2008};
+		\draw (7,0.15) -- (7,-0.15);
+		\node at (7,-0.5){2009};
+		\draw (8.25,0.15) -- (8.25,-0.15);
+		\node at (8.25,-0.5){2010};
+		\draw (9.5,0.15) -- (9.5,-0.15);
+		\node at (9.5,-0.5){2011};
+		\draw (10.75,0.15) -- (10.75,-0.15);
+		\node at (10.75,-0.5){2012};
+		\draw (12,0.15) -- (12,-0.15);
+		\node at (12,-0.5){2013};
+		\draw (13.25,0.15) -- (13.25,-0.15);
+		\node at (13.25,-0.5){2014};
+		
+		% algorithms
+		% Ncut
+		\draw (0.75,0.15) -- (0.75,0.5) -- (0.9,0.75);
+		\node at (1.25,0.75){\textbf{NC}};
+		
+		% F&H
+		\draw (2,0.15) -- (2,0.5) -- (2.15,0.75);
+		\node at (2.5,0.75){\textbf{FH}};
+		
+		% SPPS
+		\draw (4.5,0.15) -- (4.5,0.5) -- (4.65,0.75);
+		\node at (5.2,0.75){\textbf{SPPS}};
+		
+		% QS
+		\draw (5.75,0.15) -- (5.75,0.5) -- (5.9,0.75);
+		\node at (6.25,0.75){\textbf{QS}};
+		
+		% SL
+		\draw (5.75,-0.75) -- (5.75,-1) -- (5.9,-1.25);
+		\node at (6.25,-1.25){\textbf{SL}};
+		
+		% TP
+		\draw (7,0.15) -- (7,0.5) -- (7.15,0.75);
+		\node at (7.5,0.75){\textbf{TP}};
+		
+		% SSP
+		\draw (7,-0.75) -- (7,-1) -- (7.15,-1.25);
+		\node at (7.65,-1.25){\textbf{SSP}};
+		
+		% SLIC
+		\draw (8.25,0.15) -- (8.25,0.5) -- (8.4,0.75);
+		\node at (9,0.75){\textbf{SLIC}};
+		
+		% CIS
+		\draw (8.25,-0.75) -- (8.25,-1) -- (8.4,-1.25);
+		\node at (8.85,-1.25){\textbf{CIS}};
+		
+		% ERS
+		\draw (9.5,0.15) -- (9.5,0.5) -- (9.65,0.75);
+		\node at (10.1,0.75){\textbf{ERS}};
+		
+		% PB
+		\draw (9.5,-0.75) -- (9.5,-1) -- (9.65,-1.25);
+		\node at (10,-1.25){\textbf{PB}};
+		
+		% SSS
+		\draw (9.5,-1.25) -- (9.5,-1.5) -- (9.65,-1.75);
+		\node at (10.1,-1.75){\textbf{SSS}};
+		
+		% CRS
+		\draw (9.5,-1.75) -- (9.5,-2) -- (9.65,-2.25);
+		\node at (10.1,-2.25){\textbf{CRS}};
+		
+		% HS
+		\draw (9.5,-2.25) -- (9.5,-2.5) -- (9.65,-2.75);
+		\node at (10,-2.75){\textbf{HS}};
+		
+		\draw (10.75,2.25) -- (10.75,2.5) -- (10.9,2.75);
+		\node at (11.65,2.75){\cite{SchickFischerStiefelhagen:2012}};
+		
+		\draw (10.75,1.75) -- (10.75,2) -- (10.9,2.25);
+		\node at (11.8,2.25){\cite{AchantaShajiSmithLucchiFuaSuesstrunk:2012}};
+		
+		\draw (10.75,1.25) -- (10.75,1.5) -- (10.9,1.75);
+		\node at (11.55,1.75){\cite{NeubertProtzel:2012}};
+		
+		% SEEDS
+		\draw (10.75,0.75) -- (10.75,1) -- (10.9,1.25);
+		\node at (11.65,1.25){\textbf{SEEDS}};
+		
+		% DASP
+		\draw (10.75,0.15) -- (10.75,0.5) -- (10.9,0.75);
+		\node at (11.5,0.75){\textbf{DASP}};
+		
+		% TPS 
+		\draw (10.75,-0.75) -- (10.75,-1) -- (10.9,-1.25);
+		\node at (11.35,-1.25){\textbf{TPS}};
+		
+		% VCCS
+		\draw (12,-0.75) -- (12,-1) -- (12.15,-1.25);
+		\node at (12.75,-1.25){\textbf{VCCS}};
+		
+		% TPS
+		\draw (12,-1.25) -- (12,-1.5) -- (12.15,-1.75);
+		\node at (12.65,-1.75){\textbf{TPS}};
+		
+		% TS
+		%\draw (12,-1.75) -- (12,-2) -- (12.15,-2.25);
+		%\node at (12.5,-2.25){\textbf{TS}};
+		
+		% DASV
+		%\draw (12,-2.75) -- (12,-3) -- (12.15,-3.25);
+		%\node at (12.75,-3.25){\textbf{DASV}};
+		
+		% RPS
+		%\draw (13.25,0.15) -- (13.25,0.5) -- (13.4,0.75);
+		%\node at (13.85,0.75){\textbf{RPS}};
+		
+		% GSS
+		%\draw (13.25,0.75) -- (13.25,1) -- (13.4,1.25);
+		%\node at (13.85,1.25){\textbf{GSS}};
+	\end{tikzpicture}
+	\caption[Timeline of superpixel, supervoxel and temporal supervoxel algorithms. Publications on comparing these approaches are shown as well.]{Timeline of proposed superpixel, supervoxel and temporal supervoxel algorithms. See sections \ref{section:related-work-superpixel-segmentation}, \ref{section:related-work-superpixel-segmentation-using-depth} and \ref{section:section:related-work-supervoxel-segmentation} for the used abbreviations. In this context, three publications devoted to the comparison of superpixel algorithms are shown, see section \ref{section:related-work-comparison}.
+	%Legend: \textbf{NC}: Superpixels from Normalized Cuts \cite{RenMalik:2003}; \textbf{FH} Graph based superpixels by Felzenswalb \& Huttenlocher \cite{FelzenswalbHuttenlocher:2004}; \textbf{SPPS}: Superpixels using Pairwise Pixel Similarities \cite{RohkohlEngel:2007}; \textbf{QS}: QuickShift \cite{VedaldiSoatto:2008}; \textbf{SL}: Superpixel Lattices \cite{MoorePrinceWarrellMohammedJones:2008}; \textbf{TP}: Turbopixels \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009}; \textbf{SSP} Superpixels from Strong Paths \cite{DruckerMacCormick:2009};\textbf{SLIC}: Simple Linear Iterative Clustering \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2010}; \textbf{CIS}: Constant Intensity Superpixels \cite{VekslerBoykovMehrani:2010}; \textbf{ERS}: Entropy Rate Superpixels \cite{LiuTuzelRamalingamChellappa:2011}; \textbf{PB}: Superpixels via Pseudo-Boolean Optimization \cite{ZhangHartleyMashfordBurn:2011}; \textbf{SSS}: Structure Sensitive Superpixels \cite{ZengWangWangGanZha:2011}; \textbf{DASP}: Depth-Adaptive Superpixels \cite{WeikersdorferGossowBeetz:2012}; \textbf{HS}: Homogeneous Superpixels \cite{PerbetStengerMaki:2012}; \textbf{TPS}: Topology Preserved Superpixels; \textbf{SEEDS}: Superpixels Extracted via Energy-Driven Sampling \cite{VanDenBerghBoixRoigCapitaniVanGool:2012}; \textbf{VCCS}: Voxel-Cloud Connectivity Segmentation \cite{PaponAbramovSchoelerWoergoetter:2013}; \textbf{CRS}: Contour-Relaxed Superpixels \cite{ConradMertzMester:2013}; \textbf{TCS}: Temporally Consistent Superpixels \cite{ResoJachalskyRosenhahnOstermann:2013}; \textbf{TS}: Temporal Superpixels \cite{ChangDonglaiWeiFisher:2013}; \textbf{DASV}: Depth-Adaptive Supervoxels \cite{WeikersdorferSchickCremers:2013}; \textbf{RPS}: Regularity Preserving Superpixels \cite{HuazhuFuXiaochunCaoDaiTangYahongHanDongXu:2014}; \textbf{GSS}: Grid Seams Superpixels \cite{SivaWong:2014}.
+	}
+	\label{fig:related-work-superpixel-timeline}
+\end{figure}
+
+%\textbf{NC} -- Superpixels from Normalized Cuts \cite{RenMalik:2003}. The normalized cuts algorithm was originally proposed in 2000 by Shi \etal \cite{ShiMalik:2000} for the task of classical segmentation. In 2003, Ren \etal \cite{RenMalik:2003} used normalized cuts as integral component for the very first superpixel algorithm. The normalized cuts algorithm is a graph based algorithm using graph cuts to optimize a global energy function.
+%
+%\textbf{FH} -- Felzenswalb \& Huttenlocher \cite{FelzenswalbHuttenlocher:2004}. Proposed in 2004, this is another graph based approach which was originally not intended to generate superpixel segmentations. The algorithm is based on a predicate describing whether there is evidence for a boundary between to segments. Using an initial segmentation where each pixel is its own segment, the algorithm merges segments based on this predicate.
+%
+%\textbf{QS} -- QuickShift \cite{VedaldiSoatto:2008}. Proposed four years later in 2008, \textbf{QS} can be categorized as gradient ascent method and is a mode-seeking algorithm. It was originally not intended as superpixel algorithm. After estimating a density $p(x_n)$ for each pixel $x_n$, the algorithm follows the gradient of the density to assign each pixel to a mode. The modes represent the final segments.
+%
+%\textbf{TP} -- Turbopixels \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009}. In 2009, this was one of the first algorithms explicitly designed to obtain superpixel segmentations (\ie after \cite{RohkohlEngel:2007}). Turbopixels is an algorithm inspired by active contours. After selecting initial superpixel centers, each superpixel is grown by the means of an evolving contour. 
+%
+%\textbf{SLIC} -- Simple Linear Iterative Clustering \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2010}. Proposed in 2010, this algorithm is often used as baseline \cite{HuazhuFuXiaochunCaoDaiTangYahongHanDongXu:2014, PaponAbramovSchoelerWoergoetter:2013, VanDenBerghBoixRoigCapitaniVanGool:2012, ConradMertzMester:2013} and is particular interesting because of its simplicity. \textbf{SLIC} implements a local $K$-means clustering to generate a superpixel segmentation with $K$ superpixels. Therefore, \textbf{SLIC} can be categorized as gradient ascent method. The algorithm is discussed in detail in chapter~\ref{chapter:superpixel-segmentation}.
+%
+%\textbf{CS} and \textbf{CIS} -- Compact Superpixels and Constant Intensity Superpixels \cite{VekslerBoykovMehrani:2010}. Both proposed in \cite{VekslerBoykovMehrani:2010}, these are two additional graph based methods. In addition, both approaches are defined on grayscale images. Initially, the image is covered by overlapping squares such that each pixel is covered by several squares. Each square represents a superpixel and each pixel can get assigned to one of the overlapping squares. The assignment for each pixel is computed using $\alpha$-expansion \cite{BoykovVekslerZabih:2001}.
+%
+%\textbf{ERS} -- Entropy Rate Superpixels \cite{LiuTuzelRamalingamChellappa:2011}. This algorithm is another graph based method and was proposed in 2011 \cite{LiuTuzelRamalingamChellappa:2011}. An objective function based on the entropy rate of a random walk on the graph $G$ is proposed. The energy function consists of a color term, encouraging superpixels with homogeneous color, and a boundary term, favoring superpixels of similar size.
+%
+%\textbf{PB} -- Superpixels via Pseudo Boolean Optimization \cite{ZhangHartleyMashfordBurn:2011}. Proposed in 2011, this algorithm is comparable to \textbf{CS} and \textbf{CIS}. First, the image is overlayed by overlapping vertical and horizontal strips such that each pixel is covered by exactly two vertical strips and two horizontal strips. This way, considering only the horizontal strips, each pixel is either labeled $0$ or $1$. The assignment is computed using max-flow (see \cite{ZhangHartleyMashfordBurn:2011} for details). Together, the labels corresponding to the horizontal strips and the labels of the vertical strips form a superpixel segmentation.
+%
+%\textbf{SEEDS} -- Superpixels Extracted via Energy-Driven Sampling \cite{VanDenBerghBoixRoigCapitaniVanGool:2012}. Proposed in 2013, this algorithm can be categorized as gradient ascent method and is the main focus of this thesis. The authors propose a highly competitive algorithm which is limited to color images. The algorithm is discussed in detail in chapter \ref{chapter:superpixel-segmentation} and approaches to generalize the algorithm to RGB-D images are reviewed in chapter \ref{chapter:seeds-depth}.
+%
+%\textbf{TPS} -- Topology Preserved Superpixels \cite{DaiTangHuazhaFuXiaochunCao:2012}. \textbf{TPS} aims to generate a superpixel segmentation representing a regular grid topology, that is the superpixels can be arranged in an array where each superpixel has a consistent, ordered position \cite{DaiTangHuazhaFuXiaochunCao:2012}. Therefore, after choosing a set of pixels as initial grid positions, these positions are shifted to the maximum edge positions based on a provided edge map. Then, the positions define an undirected graph based on the relative positions. Neighboring grid positions are connected using shortest paths in a weighted graph, where the weight between two pixels is inverse proportional to the edge probability of those pixels.
+%
+%\textbf{CRS} -- Contour Relaxed Superpixels \cite{ConradMertzMester:2013}. This approach, proposed in 2013 \cite{ConradMertzMester:2013}, represents a statistical approach to the task of superpixel segmentation where the image $I$ is assumed to be a result of multiple stochastic processes. Actually, the value of pixel $x_n$ in channel $c$ is thought to be an outcome of a stochastic process specific to the corresponding superpixel. An energy is derived which is optimized using a hill-climbing algorithm.
+
+\textbf{NC} -- Superpixels from Normalized Cuts \cite{RenMalik:2003}. The Normalized Cuts algorithm was originally proposed in 2000 by Shi and Malik \cite{ShiMalik:2000} for the task of classical image segmentation. In 2003, Ren and Malik \cite{RenMalik:2003} used Normalized Cuts as integral component for the very first superpixel algorithm. As graph based approach, the algorithm successively adds graph cuts in order to oversegment the image where each graph cut minimizes a global criterion called Normalized Cut:
+\begin{align}
+	NCut(A,B) = \frac{cut(A,B)}{assoc(A,V)} + \frac{cut(A,B)}{assoc(B,V)}
+\end{align}
+where $A,B \subseteq V$ are the two segments resulting from the cut and
+\begin{align}
+	cut(A,B) &= \sum_{n \in A} \sum_{m \in B} w_{n,m},\\
+	assoc(A, V) &= \sum_{n \in A} \sum_{m \in V} w_{n,m}.
+\end{align}
+As shown in \cite{ShiMalik:2000}, this criterion can be minimized by discretizing the second smallest eigenvalue corresponding to the generalized eigenvalue problem
+\begin{align}
+	(\boldsymbol{d} - \boldsymbol{w})y = \lambda \boldsymbol{d} y
+\end{align}
+where $\boldsymbol{d}$ is a diagonal matrix with $d_{n,n} = \sum_{m \in V} w_{n,m}$. To obtain superpixels, this criterion can be applied recursively or additional eigenvectors (third smallest eigenvector \etc) can be used \cite{RenMalik:2003}.
+
+\begin{algorithm}[t]
+	\begin{algo}{}{\label{algo:related-work-fh}\qinput{undirected, weighted graph $G = (V,E)$}\qoutput{superpixel segmentation $S$}}
+		sort $E$ by increasing edge weight\\
+		let $S$ be the superpixel segmentation where each pixel is its own superpixel\\
+		\qfor $k = 1$ \qto $|E|$\\
+			let $(n,m)$ be the $k^\text{th}$ edge\\
+			\qif $s(x_n) \neq s(x_m)$\\
+			\qthen \qif $w_{n,m}$ is sufficiently small compared to $MInt(S_{s(x_n)}, S_{s(x_m)})$\\
+				\qthen merge superpixels $S_{s(x_n)}$ and $S_{s(x_m)}$\qfi\qfi\qrof\\
+		\qreturn $S$
+	\end{algo}
+	\caption{The superpixel algorithm \textbf{FH} proposed in \cite{FelzenswalbHuttenlocher:2004}.}
+	\label{fig:related-work-fh-algorithm}
+\end{algorithm}
+\textbf{FH} -- Felzenswalb \& Huttenlocher \cite{FelzenswalbHuttenlocher:2004}. Proposed in 2004 by Felzenswalb and Huttenlocher, this is another graph based approach summarized in algorithm \ref{algo:related-work-fh}. For $A \subseteq V$, we define $MST(A)$ to be the set of edges corresponding to the minimum spanning tree of $A$ within the graph $G = (V,E)$ and define
+\begin{align}
+	\label{eq:related-work-fh}
+	Int(A) &= \max_{(n,m) \in MST(A)} \{w_{n,m}\},\\
+	MInt(A, B) &= \min \{Int(A) + \frac{\tau}{|A|}, Int(B) + \frac{\tau}{|B|}\}
+\end{align}
+where $\tau$ is a threshold parameter and $MInt(A,B)$ is called the minimum internal difference of components $A$ and $B$. Starting from an initial superpixel segmentation where each pixel forms its own superpixel, the algorithm processes all edges sorted by increasing edge weight. Whenever an edge connects two different superpixels, these are merged if the edge weight is small compared to the minimum internal difference.% In their paper, Felzenswalb and Huttenlocher proof that this approach produces a segmentation which is neither too coarse nor too fine.
+
+\textbf{QS} -- QuickShift \cite{VedaldiSoatto:2008}. Proposed four years later in 2008, \textbf{QS} can be categorized as gradient ascent method and is a mode-seeking algorithm. In general, a mode-seeking algorithm starts from a Parzen density estimate $p(x_n)$ for all pixels and each pixel is assigned to a mode by following the density $p(x_n)$ upwards, that is in the direction of the gradient \cite{VedaldiSoatto:2008}. In particular, \textbf{QS} pre-computes $p(x_n)$ for all pixels using a Gaussian kernel. In practice, the distance $d(x_n,x_m)$ used within the Gaussian kernel consists of a color term and a spatial term:
+\begin{align}
+	\label{eq:related-work-quickshift-distance}
+	d(x_n,x_m) = \alpha\|I(x_n) - I(x_m)\|_2 + \|x_n - x_m\|_2
+\end{align}
+where $\alpha$ weights the influence of the color term. Subsequently, each pixel $x_n$ gets assigned to the pixel $x_m \in N_R(x_n) = \{x_m : \|x_n - x_m\|_\infty \leq \floor*{R/2}\}$ such that $p(x_m) > p(x_n)$ or is left unassigned. These assignments correspond to the found modes, representing the final superpixels. This procedure is summarized in algorithm \ref{algo:related-work-qs}.
+\begin{algorithm}[t]
+	\begin{algo}{QS}{\label{algo:related-work-qs}\qinput{color image $I$}\qoutput{superpixel segmentation $S$}}
+		\qfor $n = 1$ \qto $N$\\
+			initialize $t(x_n) = \boldsymbol 0$\qrof\\
+		\qfor $n = 1$ \qto $N$\\
+			\qcom{$N_R(x_n)$ is the set of all pixels in the local neighborhood of size $R \times R$ around pixel $x_n$:}\\
+			calculate $p(x_n) = \sum_{x_m \in N_R(x_n)} \exp\left(\frac{-d(x_n,x_m)^2}{(2/3) R}\right)$ \qrof\\
+		\qfor $n = 1$ \qto $N$\\
+			set $t(x_n) = \arg\max_{x_m \in N_R(x_n): p(x_m) > p(x_n)} \{p(x_m)\}$\qrof\\
+		\qcom{$t$ maps each pixel to its neighbor $x_m$ with highest $p(x_m)$ if $p(x_m) > p(x_n)$;}\\
+		\qcom{$t$ can be interpreted as forest, where all pixels $x_n$ with $t(x_n) = \boldsymbol 0$ are roots.}\\
+		derive superpixel segmentation $S$ from $t$\\
+		\qreturn $S$
+	\end{algo}
+	\caption{The superpixel algorithm \textbf{QS} proposed in \cite{VedaldiSoatto:2008}.}
+	\label{fig:related-work-qs-algorithm}
+\end{algorithm}
+
+\textbf{TP} -- Turbopixels \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009}. Proposed in 2009, Turbopixels is an algorithm inspired by active contours. After placing initial superpixel centers on a regular grid with step size $R$, each superpixel is grown based on an evolving contour. The contour is implemented as level set\footnote{That is, the superpixel boundaries are interpreted as the zero-level set of the function $\Psi$ (all points where $\Psi$ equals zero). See \cite{OsherFedkiw:2003} for details on level set methods.} of a smooth function $\Psi : \mathbb{R}^2 \times [0,\tau) \rightarrow \mathbb{R}^2$. Evolution is formally defined by the equation
+\begin{align}
+	\Psi_t = -  v \|\nabla\Psi\|_2
+\end{align}
+where $\nabla\Psi$ denotes the gradient of $\Psi$, $\Psi_t$ is the time derivative of $\Psi$ and the speed $v$ describes the future evolution of the contour. In practice, $\Psi$ will be the signed euclidean distance of each pixel to the contour \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009} and the evolution is carried out using a first order discretization such that the contour in iteration $(T+1)$ is given by
+\begin{align}
+	\label{eq:related-work-tp-evolution}
+	\Psi^{(T+1)} = \Psi^{(T)} - v_I v_B \|\nabla\Psi^{(T)}\| \Delta t
+\end{align}
+where $v_I$ depends on the image content, while $v_B$ ensures that superpixels do not overlap, see \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009} for details. In each iteration $(T + 1)$, pixels $x_n$ for which $\Psi^{(T)} (x_n) > 0$ are considered unassigned. Iteratively, the superpixels are grown by computing the speeds $v_I$ and $v_B$ and evolving the contour according to equation \eqref{eq:related-work-tp-evolution} until all pixels are assigned. A summary is given in algorithm \ref{algo:related-work-turbopixels}.
+\begin{algorithm}[t]
+	\begin{algo}{TP}{\label{algo:related-work-turbopixels}\qinput{color image $I$, number of superpixels $K$}\qoutput{superpixel segmentation $S$}}
+		% \qcom{seeds may be perturbed if necessary}\\
+		\qcom{$R$ can be derived from the image size $W \times H$ and the number of superpixels $K$:}\\
+		place superpixel centers on a regular grid with step size $R$\\
+		\qcom{All pixels $x_n$ where $\Psi(x_n) > 0$ are unassigned.}\\
+		initialize $\Psi^{(0)}$\\
+		\qrepeat\\
+			compute $v_I$ and $v_B$\\
+			evolve the contour by computing $\Psi^{(T+1)}$\\
+			update assigned pixels\\
+			$T$ \qlet $T + 1$
+		\quntil all pixels are assigned\\
+		\qcom{A superpixel segmentation can be derived from the contour given by $\Psi$:}\\
+		derive $S$ from $\Psi$\\
+		\qreturn $S$
+	\end{algo}
+	\caption{The superpixel algorithm \textbf{TP} proposed in \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009}.}
+	\label{fig:related-work-tp-algorithm}
+\end{algorithm}
+
+\textbf{SLIC} -- Simple Linear Iterative Clustering \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2010}. Proposed in 2010, this algorithm is often used as baseline, for example in \cite{HuazhuFuXiaochunCaoDaiTangYahongHanDongXu:2014, PaponAbramovSchoelerWoergoetter:2013, VanDenBerghBoixRoigCapitaniVanGool:2012} and \cite{ConradMertzMester:2013}, and is particular interesting because of its simplicity. \textbf{SLIC} implements a local $K$-means clustering to generate a superpixel segmentation with $K$ superpixels. Therefore, \textbf{SLIC} can be categorized as gradient ascent method. The algorithm is discussed in detail in chapter \ref{chapter:superpixel-segmentation}.
+
+\textbf{CIS} -- Constant Intensity Superpixels \cite{VekslerBoykovMehrani:2010}. Proposed by Veksler \etal in 2010, this is a graph based method defined on grayscale images only. However, the below description is easily extended to color images. Initially, the image is covered by overlapping squares such that each pixel is covered by several squares. Each square represents a superpixel and each pixel can get assigned to one of these squares. An energy of the form
+\begin{align}
+	\label{eq:related-work-cis-energy}
+	E(S) = \sum_{n \in V} \sum_{m \in V} w_{n,m} \psi_{n,m}(s(x_n), s(x_m)) + \sum_{n \in V} \theta_n(s(x_n))
+\end{align}
+is minimized using $\alpha$-expansion \cite{BoykovVekslerZabih:2001}. In particular, $\theta_n$ defines a data term which is simplified\footnote{Actually, instead of using $I(S_i)$ within the data term, the color of the center pixel of the initial square $S_i$ is used and fixed. However, this requires discussing an additional term ensuring that this center pixel is assigned to superpixel $S_i$ as well, see \cite{VekslerBoykovMehrani:2010}.} given by
+%\begin{align}
+%	\theta_n(i) = \begin{cases}
+%		1 & \text{if } x_n \text{ is assigned to superpixel } S_i\\
+%		0 & \text{else}
+%	\end{cases}
+%\end{align}
+%in the case of Compact Superpixels and
+\begin{align}
+	\label{eq:related-work-cis-data-term}
+	\theta_n(i) = \begin{cases}
+		|I(x_n) - I(S_i)| & \text{if } x_n \text{ is assigned to superpixel } S_i\\
+		0 & \text{else}
+	\end{cases}.
+\end{align}
+\begin{algorithm}[t]
+	\begin{algo}{ERS}{\label{algo:related-work-ers}\qinput{undirected, weighted graph $G = (V, E)$}\qoutput{superpixel segmentation $S$}}
+		initialize $M = \emptyset$\\
+		\qforeach edge $(n,m) \in E$\\
+			\qcom{Let $\hat{G}$ denote the graph $\hat{G} = (V, M \cup \{(n, m)\})$:}\\
+			choose edge $(n,m) \in E$ yielding the largest gain in the energy $E(\hat{G})$\\
+			\qif $\hat{G}$ has no cycles and $\hat{G}$ contains less or equal than $K$ connected components\\
+				\qthen $M$ \qlet $M \cup \{(n,m)\}$\qfi\qrof\\
+		\qcom{The superpixel segmentation is given by the connected components in $\hat{G}$:}\\
+		derive superpixel segmentation $S$ from $\hat{G}$\\
+		\qreturn $S$
+	\end{algo}
+	\caption{The greedy algorithm used to maximize the energy $E(\hat{G})$ to obtain Entropy Rate Superpixels \cite{LiuTuzelRamalingamChellappa:2011}.}
+	\label{fig:related-work-ers-algorithm}
+\end{algorithm}
+Further, $\psi_{n,m}$ is a Potts Model given by
+\begin{align}
+	\psi_{n, m} (i, j) = \begin{cases}
+		1 & \text{if } i \neq j\\
+		0 & \text{else}
+	\end{cases}
+\end{align}
+The weights $w_{n,m}$ for neighboring pixels $x_n$ and $x_m$ are set to
+\begin{align}
+	\label{eq:related-work-cis-weights}
+	w_{n,m} = \lambda \exp\left( - \frac{(I(x_n) - I(x_m))^2}{2 \|x_n - x_m\|_2 \sigma^2} \right)
+\end{align}
+where $\lambda$ is a controllable parameter and $\sigma$ is set to the overall variance within the image. 
+
+\textbf{ERS} -- Entropy Rate Superpixels \cite{LiuTuzelRamalingamChellappa:2011}. This algorithm is another graph based method and was proposed in 2011. An objective function based on the entropy rate of a random walk on the graph $\hat{G} = (V, M)$ with $M \subseteq E$ is proposed:
+\begin{align}
+	\label{eq:related-work-ers-energy}
+	E(\hat{G}) = H(\hat{G}) + \lambda B(\hat{G}).
+\end{align}
+This energy is maximized subject to the constraint that the number of connected components in $\hat{G}$ is lower or equal to the desired number of superpixels $K$. Here, $H(\hat{G})$ refers to the entropy rate of the random walk, while $B(\hat{G})$ defines a balancing term. We use $w_n = \sum_{m \in V} w_{n,m}$ to define
+\begin{align}
+	H(\hat{G}) = - \sum_{n \in V} \frac{w_n}{\sum_{m \in V} w_m} \sum_{m \in V} p_{n,m} \log(p_{n,m})
+\end{align}
+where the probabilities $p_{n,m}$ represent the transition probabilities of the random walk and are calculated as
+\begin{align}
+	p_{n,m} = \begin{cases}
+		\frac{w_{n,m}}{w_n} & \text{if } n \neq m \text{ and } (n,m) \in M\\
+		0 & \text{if } n \neq m \text{ and } (n,m) \notin M\\
+		1 - \frac{\sum_{m = 1}^N w_{n,m}}{w_n} & \text{if } n = m
+	\end{cases}.
+\end{align}
+In practice the weights $w_{n,m}$ are defined using the $L_1$ color distance between pixels $x_n$ and $x_m$ and then using a Gaussian kernel to obtain similarities \cite{LiuTuzelRamalingamChellappa:2011}. The balancing term favors superpixels of approximately the same size:
+\begin{align}
+	B(\hat{G}) = - \sum_{i = 1}^K \frac{|S_i|}{N} \log\left(\frac{|S_i|}{N}\right).
+\end{align}
+Starting from an initial superpixel segmentation where each pixel forms its own superpixel, the algorithm greedily adds edges to merge superpixels, see algorithm \ref{algo:related-work-ers}.
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{|c c c c c|}
+		\hline
+		$s(x_n)$ & $s(x_m)$ & \eqref{eq:related-work-pb-case-1} & \eqref{eq:related-work-pb-case-2}  & \eqref{eq:related-work-pb-case-3} \\\hline\hline
+		$0$ & $0$ & $0$ & $w_{n,m}$ & $0$\\
+		$0$ & $1$ & $w_{n,m}$ & $w_{n,m}$ & $w_{n,m}$\\
+		$1$ & $0$ & $w_{n,m}$ & $w_{n,m}$ & $w_{n,m}$\\
+		$1$ & $1$ & $0$ & $0$ & $w_{n,m}$\\\hline
+	\end{tabular}
+	\caption[The data term of the energy used by \textbf{PB} \cite{ZhangHartleyMashfordBurn:2011}.]{The data term $\psi_{n,m}(s(x_n),s(x_m))$ of the energy in equation \eqref{eq:related-work-pb-energy} depends on the labels of pixels $x_n$ and $x_m$ as well as on the corresponding strips, see equations \eqref{eq:related-work-pb-case-1}, \eqref{eq:related-work-pb-case-2} and \eqref{eq:related-work-pb-case-3}.}
+	\label{table:related-work-pb}
+\end{table}
+\textbf{PB} -- Superpixels via Pseudo Boolean Optimization \cite{ZhangHartleyMashfordBurn:2011}. Proposed in 2011, this algorithm is comparable to \textbf{CIS} and is therefore categorized as graph based. First, the image is covered by overlapping vertical and horizontal strips such that each pixel is covered by exactly two vertical and two horizontal strips. This way, considering only the horizontal strips, each pixel is either labeled $0$ or $1$. Then, an energy similar to \eqref{eq:related-work-cis-energy} is used:
+\begin{align}
+	\label{eq:related-work-pb-energy}
+	E(S) = \sum_{n \in V} \sum_{m \in V}  \psi_{n,m}(s(x_n),s(x_m)) + \sum_{n \in V} \theta_n(s(x_n))
+\end{align}
+where the data term $\theta_n$ is set to zero. The smoothing term is based on the following considerations. Numbering the horizontal strips such that $H_i \subseteq V$ is covered halfway by $H_{i+1} \subseteq V$ and considering neighboring pixels $x_n$ and $x_m$ such that $x_n$ lies above or at the same horizontal line as $x_m$, three cases are possible:
+\begin{align}
+	\label{eq:related-work-pb-case-1}
+	x_n \in H_i \cap H_{i+1}\quad&\text{ and }\quad x_m \in H_i \cap H_{i+1},\\
+	\label{eq:related-work-pb-case-2}
+	x_n \in H_i \cap H_{i+1}\quad&\text{ and }\quad x_m \in H_{i+1} \cap H_{i+2},\\
+	\label{eq:related-work-pb-case-3}
+	x_n \in H_{i+1} \cap H_{i+2}\quad&\text{ and }\quad x_m \in H_{i+2} \cap H_{i+3}.
+\end{align}
+Including two possible labels per pixel, there are twelve cases to consider. Table \ref{table:related-work-pb} shows the resulting smoothing term for each case where the weights $w_{n,m}$ are calculated using a Gaussian kernel and the $L_1$ color distance, similar to \textbf{ERS}. The energy is optimized using max-flow. The final superpixel segmentation can be derived from the vertical and horizontal labels.
+
+\textbf{CRS} -- Contour Relaxed Superpixels \cite{MesterConradGuevara:2011,ConradMertzMester:2013}\footnote{We first found this approach as presented in \cite{ConradMertzMester:2013}. However, the approach was already introduced in 2011 in \cite{MesterConradGuevara:2011}. As both publications offer a thorough description of the superpixel algorithm, we will use \cite{ConradMertzMester:2013} as primary reference.}. This approach, proposed in 2013, represents a statistical approach to the task of superpixel segmentation where the image $I$ is assumed to be a result of multiple stochastic processes. Actually, the value $I_c(x_n)$ of pixel $x_n$ in channel $c$ is thought to be an outcome of a stochastic process described by the parameter set $\theta_{s(x_n),c}$. Then, using $\boldsymbol \theta~=~\{\theta_{1,1}, \ldots, \theta_{K,3}\}$, the superpixel segmentation $S$ maximizing  the probability $p(S,\boldsymbol \theta | I)$ is searched for. Applying Bayes' theorem and omitting the normalization, the energy is given by
+\begin{align}
+	\label{eq:related-work-contour-relaxed-energy}
+	E(S) &= p(I | S,\boldsymbol \theta) p(S, \boldsymbol \theta)%\\
+	%&= p(I | S, \boldsymbol \theta) p(\boldsymbol \theta | S) p(S)
+\end{align}
+where $p(S, \boldsymbol \theta)$ is set to $ p(S, \boldsymbol \theta) = \kappa p(S)$ with $\kappa$ constant as the parameters $\boldsymbol \theta$ are considered deterministic parameters.
+\begin{algorithm}[t]
+	\begin{algo}{CRS}{\label{algo:related-work-contour-relaxed}\qinput{color image $I$, number of superpixels $K$}\qoutput{superpixel segmentation $S$}}
+		\qcom{The step size $R$ can be derived from the image size $W \times H$ and $K$:}\\
+		initialize $S$ as regular grid with step size $R$\\
+		initialize $\boldsymbol \theta$ using sufficient statistics (\eg Gaussian)\\
+		\qfor $t = 1$ \qto $T$\\
+			\qcom{Originally, the image is traversed multiple times using different directions to avoid a directional bias \cite{ConradMertzMester:2013}:}\\
+			\qfor $n = 1$ \qto $N$\\
+			\qif $x_n$ is a boundary pixel\\
+				\qcom{This can be evaluated by taking $\boldsymbol \theta$ as constant; Conrad \etal suggest to minimize the negative logarithm of \eqref{eq:related-work-contour-relaxed-maximize} instead:}\\
+				\qthen assign $x_n$ to the label maximizing \eqref{eq:related-work-contour-relaxed-maximize}\qfi\qrof\qrof\\
+		\qreturn $S$
+	\end{algo}
+	\caption{The algorithm to maximize the energy given in equation \eqref{eq:related-work-contour-relaxed-energy} to obtain Contour Relaxed Superpixels \cite{ConradMertzMester:2013}.}
+	\label{fig:related-work-contour-relaxed-algorithm}
+\end{algorithm}
+Then, an EM-style optimization scheme is applied. The parameters $\boldsymbol \theta$ are estimated using maximum likelihood considering the superpixel segmentation $S$ to be constant, followed by optimizing $S$ while holding $\boldsymbol \theta$ constant. In practice, $p(S)$ is modeled using a Gibbs Random Field (\eg see \cite{Bishop:2006}) where for each pixel $x_n$ a clique of size two for each direct or diagonal neighbor is considered. Then, $p(S)$ can be written~as
+\begin{align}
+	p(S) = \kappa' \exp(- N_{e} C_{e} - N_{v} C_{v})
+\end{align}
+where $N_{e}$ is the number of direct neighbors of $x_n$ having a different label than $s(x_n)$, $N_{v}$ is the number of diagonal neighbors of $x_n$ having a different label than $s(x_n)$ and $C_e$ and $C_v$ are the corresponding costs. Further, the probability $p(I|S,\boldsymbol \theta) = p(I|S)$ can be expressed as
+\begin{align}
+	p(I|S) = \prod_{S_i \in S} \prod_{x_n \in S_i} \prod_{c = 1}^3 p(I_c(x_n) | \theta_{i,c}).
+\end{align}
+when assuming the stochastic processes to be statistically independent. The optimization is carried out as follows. In each iteration, all boundary pixels $x_n$ are considered to change their label. Assuming $\boldsymbol \theta$ to be constant, pixel $x_n$ is assigned to the label maximizing
+\begin{align}
+	\label{eq:related-work-contour-relaxed-maximize}
+	E(S) = \kappa \kappa' \exp(- N_{e} C_{e} - N_{v} C_{v}) \prod_{S_i} \prod_{x_m \in S_i} \prod_{c=1}^3 p(I_c(x_m) | \theta_{i,c})
+\end{align}
+where the first product runs over all superpixels $S_i$ to which pixel $x_n$ may be assigned.
+This is summarized in algorithm \ref{algo:related-work-contour-relaxed} and it becomes apparent that \textbf{CRS} can be categorized as gradient ascent method. The implementation of \textbf{CRS} models the stochastic processes as being Gaussian and uses
+\begin{align}
+	|S_i|,\quad I_c(S_i)\quad\text{ and }\quad \sum_{x_m \in S_i} I_c(x_m)^2
+\end{align}
+as sufficient statistics. The compactness of the obtained superpixel segmentation can be controlled by additionally using the pixel coordinates as channels. A compactness parameter $\beta$ controls the weighting of the costs based on these additional channels.
+
+\textbf{SEEDS} -- Superpixels Extracted via Energy-Driven Sampling \cite{VanDenBerghBoixRoigCapitaniVanGool:2012}. Proposed in 2013, this algorithm can be categorized as gradient ascent method and is the main focus of this thesis. The algorithm is discussed in detail in chapter \ref{chapter:superpixel-segmentation} and approaches to generalize the algorithm to use depth information are reviewed in chapter~\ref{chapter:seeds-depth}.
+
+\textbf{TPS} -- Topology Preserved Superpixels \cite{DaiTangHuazhaFuXiaochunCao:2012}. \textbf{TPS} aims to generate a superpixel segmentation representing a regular grid topology, that is the superpixels can be arranged in an array where each superpixel has a consistent, ordered position \cite{MoorePrinceWarrellMohammedJones:2008}. Given an edge map
+\begin{align}
+	p: \ubar{W} \times \ubar{H} \rightarrow [0,1], x_n \mapsto p(x_n)
+\end{align}
+defining the probability of an edge being present at pixel $x_n$, the algorithm proceeds in three steps. Firstly, a set of pixels are chosen as initial grid positions. This is done on a regular grid with horizontal step size $R_h$ and vertical step size $R_v$ given as
+\begin{align}
+	R_v \approx \sqrt{\frac{KH}{W}}\quad\text{ and }\quad R_h \approx \frac{K}{R_v}.
+\end{align}
+Let $\hat{\mu}_1, \ldots, \hat{\mu}_{K'}$ denote these positions (to obtain $K$ superpixels, $K'$ of these grid positions are needed). Secondly, the positions are moved towards maximum edge positions by choosing
+\begin{align}
+	\hat{\mu}_i = \arg \max_{x_n \in N_R(\hat{\mu}_i)} \{p(x_n) \exp\left(\frac{\|x_n - \hat{\mu}_i\|_2}{2\sigma^2}\right)\}
+\end{align}
+where $ N_R(\hat{\mu}_i)$ defines a local search region around the position $\hat{\mu}_i$.
+Finally, these grid positions define an undirected graph based on their relative positions. Neighboring positions are connected by the shortest path calculated on the undirected, weighted graph with weights
+\begin{align}
+	w_{n,m} = \frac{1}{p(x_n) + p(x_m)}
+\end{align}
+for neighboring pixels $x_n$ and $x_m$. The shortest path is computed using Dijkstra's algorithm (\eg see \cite{CormenLeisersonRivestStein:2009}). The superpixels are then given by the enclosed regions.
+
+There are several more superpixel algorithms which are not evaluated in the course of this thesis as no source code is available.% Beneath Superpixels using Morphology (\textbf{SM}) introduced in \cite{MalladiRamRodriguez:2014} and Grid Seams Superpixels (\textbf{GSS}) \cite{SivaWong:2014} -- both approaches published very recently -- these are:
+These are:
+
+\textbf{SPPS} -- Superpixels using Pairwise Pixel Similarities \cite{RohkohlEngel:2007}. The approach described by Rohkohl and Engel is based on an initial superpixel segmentation of the image into a regular hexagonal grid. Pixels are exchanged between superpixels based on color similarity. \textbf{SPPS} is a gradient ascent method where in each iteration, all boundary pixels are considered to change their label.
+
+\textbf{SL} -- Superpixel Lattices \cite{MoorePrinceWarrellMohammedJones:2008}. This algorithms is similar to \textbf{TPS} in that in attempts to create a regular grid of superpixels. Based on an edge map, the image is successively partitioned using vertical and horizontal paths. The paths can be found using different approaches: either based on graph cuts, or using dynamic programming. Therefore, the algorithm cannot be categorized as either graph based method or gradient ascent method.
+
+\textbf{SSP} -- Superpixels from Strong Paths \cite{DruckerMacCormick:2009}. The work of Drucker and MacCormick aims to provide an efficient method to generate superpixel segmentations. Therefore, it makes use of dynamic programming to compute minimum cost paths on a given edge map or similar feature maps. Although the authors do not give an explicit energy, the algorithm can be categorized as gradient ascent method.
+
+\textbf{SSS} -- Structure Sensitive Superpixels \cite{ZengWangWangGanZha:2011}. Zeng \etal propose a superpixel algorithm based on Lloyd's algorithm and a custom geodesic distance. This way, the superpixels adapt to the underlying image content such that superpixels in highly textured regions tend to be smaller, while superpixels within homogeneous regions are bigger.
+
+\textbf{HS} -- Homogeneous Superpixels \cite{PerbetStengerMaki:2012}. \textbf{HS} by Perbet and Maki resembles a graph based algorithm utilizing Markov Clustering. Based on a Markov graph, that is a undirected, weighted graph where all edges of a given vertex are positive and sum to one, the algorithm alternates an expansion and an inflation step which are carried out on the corresponding weight matrix.
+
+In \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2012}, Achanta \etal evaluate an additional algorithm able to oversegment images by computing watershed lines, see \cite{VincentSoille:1991} for details. This approach is extended in \cite{ArbelaezMaireFowlkesMalik:2009}: Arbel\'aez \etal propose an extension called Oriented Watershed Transform to generate an oversegmentation based on an edge map provided by the contour detector described in \cite{ArbelaezMaireFowlkesMalik:2011}. The superpixels within this oversegmentation are iteratively merged based on their similarity in order to form a hierarchy of segmentations. While we do not discuss this approach in detail, it is commonly used as pre-processing step \cite{SilbermanHoiemKohliFergus:2012,RenBoFox:2012} and therefore worth mentioning in the context of superpixel algorithms.
+
+\section{Superpixel Segmentation using Depth Information}
+\label{section:related-work-superpixel-segmentation-using-depth}
+
+After reviewing the literature on superpixel segmentation of color images, we discuss the literature on superpixel algorithms using depth information. At this point it is necessary to distinguish algorithms creating supervoxels\footnote{If voxel denotes a volume pixel, a supervoxel is a group of voxels. This means, a supervoxel is the generalization of a superpixel to an additional dimension. As discussed in section \ref{section:section:related-work-supervoxel-segmentation}, this dimension may either be given by depth information or by the temporal domain of a video.} and algorithms creating superpixels by utilizing depth information as additional cue. The former operates directly on voxels, while the latter will be applied to color images and use the additional depth information to improve the generated superpixel segmentation. In this section we review Depth-Adaptive Superpixels \cite{WeikersdorferSchickCremers:2013} as the only algorithm generating superpixel segmentations by utilizing depth information.
+
+\textbf{DASP} - Depth-Adaptive Superpixels \cite{WeikersdorferSchickCremers:2013} (see also \cite{Weikersdorfer:2014}). Proposed in 2012, this is the first algorithm utilizing depth information to improve the generated superpixel segmentation. Although similar to \textbf{SLIC}, this algorithm heavily relies on depth information for choosing the initial superpixel centers and the actual $K$-means clustering. This approach will be reviewed in detail in chapter \ref{chapter:superpixel-segmentation-depth}.
+
+\section{Supervoxel Segmentation}
+\label{section:section:related-work-supervoxel-segmentation}
+
+% temporal supervoxels: \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2012, ResoJachalskyRosenhahnOstermann:2013, ChangDonglaiWeiFisher:2013, HuazhuFuXiaochunCaoDaiTangYahongHanDongXu:2014, VanDenBerghRoigBoixManenVanGool:2013}
+As mentioned above, supervoxels describe groups of volume pixels, short voxels. Again, it is necessary to differentiate between supervoxels in three dimensional space and supervoxels using the temporal domain of a video as third dimension, which we call temporal supervoxels. As stated in \cite{ResoJachalskyRosenhahnOstermann:2013} it is not sufficient to treat the temporal domain of a video as additional spatial dimension such that the above naming seems appropriate. Temporal supervoxel algorithms are discussed in \cite{ResoJachalskyRosenhahnOstermann:2013, ChangDonglaiWeiFisher:2013} as well as \cite{HuazhuFuXiaochunCaoDaiTangYahongHanDongXu:2014}. As this thesis focusses on superpixel algorithms using depth information, we only review the literature on supervoxel algorithms, which is limited to one approach proposed in \cite{PaponAbramovSchoelerWoergoetter:2013}.
+
+\textbf{VCCS} -- Voxel-Cloud Connectivity Segmentation \cite{PaponAbramovSchoelerWoergoetter:2013}. This is the first algorithm generating supervoxels by oversegmenting a point cloud. \textbf{VCCS} is similar to \textbf{SLIC} and \textbf{DASP}. Based on a $26$-adjacency graph constructed from a voxelized point cloud, local $K$-means clustering is applied to form supervoxels. However, in contrast to \textbf{SLIC}, connectivity is ensured by using breadth-first search as basis for $K$-means clustering. This approach is introduced in detail in chapter \ref{chapter:superpixel-segmentation-depth}.
+
+%\subsection{Temporal Supervoxel Segmentation}
+%
+%Before thinking about integrating depth information into superpixel segmentation, or oversegmenting point clouds, authors have thought about generalizing superpixel segmentation to the temporal domain of videos. While this can be achieved by naturally extending some of the presented superpixel approaches, as for example \textbf{SLIC} or \textbf{SEEDS}, there are also more sophisticated approaches available: \cite{ResoJachalskyRosenhahnOstermann:2013, ChangDonglaiWeiFisher:2013, HuazhuFuXiaochunCaoDaiTangYahongHanDongXu:2014}. These focus on the temporal consistency of the superpixel segmentation at each frame \cite{ResoJachalskyRosenhahnOstermann:2013}. A discussion is available in \cite{ResoJachalskyRosenhahnOstermann:2013}.
+
+\section{Comparison and Evaluation}
+\label{section:related-work-comparison}
+
+There are only few publications devoted to the comparison of existing superpixel algorithms in a consistent framework: to the best of our knowledge these are \cite{SchickFischerStiefelhagen:2012, AchantaShajiSmithLucchiFuaSuesstrunk:2012} and \cite{NeubertProtzel:2012}. Figure \ref{fig:related-work-superpixel-timeline} shows these works in relation to the superpixel algorithms discussed in the previous sections. As can be seen, these works cannot include some of the recently proposed algorithms like \textbf{SEEDS}, \textbf{DASP} or \textbf{VCCS}. Furthermore, some of the older algorithms are partly not included either. Finally, these publications do not cover superpixel segmentation using depth information or supervoxel segmentation of point clouds. Although most publications proposing new superpixel algorithms include a brief comparison to other state-of-the-art methods, these evaluations cover only parts of the literature. Furthermore, implementations of error measures vary across publications \cite{NeubertProtzel:2012}.
+% TODO: why is this unsatisfactory?
+
+\section{Datasets and Benchmarks}
+
+Superpixel algorithms are usually evaluated utilizing the Berkeley Segmentation Dataset \cite{ArbelaezMaireFowlkesMalik:2011}. Achanta \etal \cite{AchantaShajiSmithLucchiFuaSuesstrunk:2012} additionally use the Microsoft Research Cambridge Dataset \cite{ShottonWinnRotherCriminisi:2009}, short MSRC. For evaluating supervoxel algorithms (or superpixel algorithms using depth information), the NYU Depth Dataset~\cite{SilbermanHoiemKohliFergus:2012} was used by Papon \etal \cite{PaponAbramovSchoelerWoergoetter:2013}. Weikersdorfer \etal \cite{WeikersdorferGossowBeetz:2012} used a custom dataset\footnote{Available at \url{https://github.com/Danvil/dasp}.} comprising eleven RGB-D images to evaluate \textbf{DASP}. The Berkeley Segmentation Dataset includes a benchmark, which we refer to as Berkeley Segmentation Benchmark, implementing common measures used to evaluate segmentation algorithms and contour detectors. For evaluating superpixel algorithms commonly used measures include the Undersegmentation Error \cite{LevinshteinStereKutulakosFleetDickinsonSiddiqi:2009, LiuTuzelRamalingamChellappa:2011} and the Achievable Segmentation Accuracy \cite{LiuTuzelRamalingamChellappa:2011}. Additionally, Schick \etal \cite{SchickFischerStiefelhagen:2012} proposed a compactness measure. Both the Berkeley Segmentation Dataset as well as the NYU Depth Dataset are discussed in detail in chapter \ref{chapter:datasets}. In addition, chapter \ref{chapter:datasets} includes a thorough discussion of all used evaluation measures.

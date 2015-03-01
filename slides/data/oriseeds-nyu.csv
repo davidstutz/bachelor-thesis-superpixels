@@ -1,0 +1,7 @@
+Kd		Rec5Bins2ItN1	UE5Bins2ItN1	K5Bins2ItN1		Rec5Bins2ItN0	UE5Bins2ItN0	K5Bins2ItN0		Rec5Bins4ItN1	UE5Bins4ItN1	K5Bins4ItN1		Rec6Bins2ItN1	UE6Bins2ItN1	K6Bins2ItN1	Rec7Bins2ItN1	UE7Bins2ItN1	K7Bins2ItN1
+450		0.87724			0.19689			429				0.88111			0.20021			449				0.87665			0.20564			414				0.89448			0.19046			433				0.90292			0.18596			437
+700		0.91116			0.17089			664				0.9145			0.17407			696				0.90358			0.17819			629				0.9258			0.1656			666				0.93278			0.16313			666
+840		0.92627			0.15414			830				0.93208			0.15655			839				0.91675			0.15963			754				0.93696			0.14985			830				0.94376			0.14659			831
+1100	0.94549			0.13848			1064			0.94966			0.14094			1098			0.93318			0.1433			994				0.95415			0.13444			1069			0.95907			0.13183			1067
+#1400	nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan
+#1850	nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan				nan

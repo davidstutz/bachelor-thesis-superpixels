@@ -1,0 +1,12 @@
+[submodule "code/nyu-depth-v2-tools"]
+	path = code/nyu-depth-v2-tools
+	url = https://github.com/davidstutz/nyu-depth-v2-tools.git
+[submodule "code/extended-berkeley-segmentation-benchmark"]
+	path = code/extended-berkeley-segmentation-benchmark
+	url = https://github.com/davidstutz/extended-berkeley-segmentation-benchmark.git
+[submodule "code/seeds-revised"]
+	path = code/seeds-revised
+	url = https://github.com/davidstutz/seeds-revised.git
+[submodule "code/superpixels-revisited"]
+	path = code/superpixels-revisited
+	url = https://github.com/davidstutz/superpixels-revisited.git

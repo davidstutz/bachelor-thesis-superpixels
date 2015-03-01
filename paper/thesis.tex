@@ -1,0 +1,492 @@
+\documentclass[12pt,twoside,a4paper]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage{a4}
+\usepackage{fancyhdr}
+\usepackage{nomencl}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{t1enc}
+\usepackage{latexsym}
+\usepackage{wrapfig}
+\usepackage{amsthm}
+\newtheorem{prop}{Proposition}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage[toc,page]{appendix}	
+
+\usepackage{accents}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+\usepackage{graphicx}
+\usepackage{pslatex}
+\usepackage{ifthen}
+
+\usepackage[T1]{fontenc}
+\usepackage{pslatex}
+
+\usepackage{psfrag}
+\usepackage[footnotesize,FIGBOTCAP,TABBOTCAP]{subfigure}
+\subfigbottomskip=0.3em
+%\subfigcapmargin = 0.5em
+%\subfigbottomskip = 0em
+\subfigcapskip = 0.25em
+\usepackage[font=footnotesize]{caption}
+\usepackage{sidecap}
+% http://www.latex-community.org/forum/viewtopic.php?f=45&t=7247
+\usepackage{float}
+% http://tex.stackexchange.com/questions/142536/error-too-many-unprocesssed-floats-multiple-figures-single-page
+\usepackage{morefloats}
+
+\usepackage[section]{algorithm}
+\captionsetup[algorithm]{font=footnotesize}
+\usepackage[numbered]{packages/algo}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage{tikz}
+\usepackage{packages/3dplot}
+\usepackage{rotating}
+\usetikzlibrary{3d}
+\usetikzlibrary{arrows.new}
+\usetikzlibrary{matrix}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{multirow}
+% using equal sign in column labels
+\newcommand{\pgfequalsign}{=}
+\newcommand\refbsdnyu[1]{% positions two related legendimages in one cell
+  \raisebox{1.5pt}{\ref{plot:#1bsd}}\llap{\raisebox{-1pt}{\ref{plot:#1nyu}}}%
+}
+% custom marker cycle lists
+\pgfplotscreateplotcyclelist{custom mark list 1}{%
+	every mark/.append style={solid},mark=*\\%
+	mark=o\\%
+}
+\pgfplotscreateplotcyclelist{custom mark list 2}{%
+	every mark/.append style={solid},mark=*\\%
+	every mark/.append style={solid},mark=triangle*\\%
+	mark=o\\%
+	mark=triangle\\%
+}
+\pgfplotscreateplotcyclelist{custom mark list 3}{%
+	every mark/.append style={solid},mark=*,mark options={scale=1}\\%
+	every mark/.append style={solid},mark=triangle*,mark options={scale=1}\\%
+	every mark/.append style={solid},mark=diamond*,mark options={scale=1}\\%
+	mark=o,mark options={scale=1}\\%
+	mark=triangle,mark options={scale=1}\\%
+	mark=diamond,mark options={scale=1}\\%
+}
+\pgfplotscreateplotcyclelist{custom mark list 4}{%
+	every mark/.append style={solid},mark=*\\%
+	every mark/.append style={solid},mark=triangle*\\%
+	every mark/.append style={solid},mark=diamond*\\%
+	every mark/.append style={solid},mark=pentagon*\\%
+	mark=o\\%
+	mark=triangle\\%
+	mark=diamond\\%
+	mark=pentagon\\%
+}
+\pgfplotscreateplotcyclelist{custom mark list 5}{%
+	every mark/.append style={solid},mark=*\\%
+	every mark/.append style={solid},mark=triangle*\\%
+	every mark/.append style={solid},mark=diamond*\\%
+	every mark/.append style={solid},mark=pentagon*\\%
+	every mark/.append style={solid},mark=square*,mark options={scale=1}\\%
+	mark=o\\%
+	mark=triangle\\%
+	mark=diamond\\%
+	mark=pentagon\\%
+	mark=square,mark options={scale=1}\\%
+}
+\pgfplotscreateplotcyclelist{custom mark list nyu}{%
+	mark=o\\%
+	mark=triangle\\%
+	mark=diamond\\%
+	mark=pentagon\\%
+	mark=square,mark options={scale=1}\\%
+}
+\pgfplotscreateplotcyclelist{appendix comparison bsd}{%
+	teal,mark=star,solid\\% NC
+	%orange,mark=star,solid\\% FH
+	%red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	%black,mark=star,solid\\% SLIC3D
+	violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	%red,mark=star,dashed\\% SEEDS3Dn
+	%blue,mark=star,dashed\\% DASP
+	green!40!black,mark=star,dashed\\% TPS
+	violet,mark=star,dashed\\% CRS
+	% DCRS
+	%brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{appendix comparison nyu}{%
+	teal,mark=star,solid\\% NC
+	%orange,mark=star,solid\\% FH
+	%red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	%black,mark=star,solid\\% SLIC3D
+	violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	red,mark=star,dashed\\% SEEDS3Dn
+	blue,mark=star,dashed\\% DASP
+	green!40!black,mark=star,dashed\\% TPS
+	violet,mark=star,dashed\\% CRS
+	% DCRS
+	brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{comparison bsd}{%
+	teal,mark=star,solid\\% NC
+	orange,mark=star,solid\\% FH
+	red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	%black,mark=star,solid\\% SLIC3D
+	violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	%red,mark=star,dashed\\% SEEDS3Dn
+	%blue,mark=star,dashed\\% DASP
+	green!40!black,mark=star,dashed\\% TPS
+	violet,mark=star,dashed\\% CRS
+	% DCRS
+	%brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{comparison nyu}{%
+	teal,mark=star,solid\\% NC
+	orange,mark=star,solid\\% FH
+	red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	black,mark=star,solid\\% SLIC3D
+	violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	red,mark=star,dashed\\% SEEDS3Dn
+	blue,mark=star,dashed\\% DASP
+	green!40!black,mark=star,dashed\\% TPS
+	violet,mark=star,dashed\\% CRS
+	% DCRS
+	brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{without nc cis tps comparison bsd}{%
+	%teal,mark=star,solid\\% NC
+	orange,mark=star,solid\\% FH
+	red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	%black,mark=star,solid\\% SLIC3D
+	%violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	%red,mark=star,dashed\\% SEEDS3Dn
+	%blue,mark=star,dashed\\% DASP
+	%green!40!black,mark=star,dashed\\% TPS
+	violet,mark=star,dashed\\% CRS
+	% DCRS
+	%brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{without nc cis tps comparison nyu}{%
+	%teal,mark=star,solid\\% NC
+	orange,mark=star,solid\\% FH
+	red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	black,mark=star,solid\\% SLIC3D
+	%violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	red,mark=star,dashed\\% SEEDS3Dn
+	blue,mark=star,dashed\\% DASP
+	%green!40!black,mark=star,dashed\\% TPS
+	violet,mark=star,dashed\\% CRS
+	% DCRS
+	brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{runtime bsd low}{%
+	%teal,mark=star,solid\\% NC
+	orange,mark=star,solid\\% FH
+	%red,mark=star,solid\\% QS
+	%green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	% SLIC3D
+	%violet,mark=star,solid\\% CIS
+	%cyan,mark=star,solid\\% ERS
+	%brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	% SEEDS3Dn
+	% DASP
+	%green!40!black,mark=star,dashed\\% TPS
+	%violet,mark=star,dashed\\% CRS
+	% DCRS
+	% VCCS
+}
+\pgfplotscreateplotcyclelist{runtime bsd high}{%
+	%teal,mark=star,solid\\% NC
+	%orange,mark=star,solid\\% FH
+	red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	%blue,mark=star,solid\\% SLIC
+	% SLIC3D
+	violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	%brown,mark=star,solid\\% PB
+	%teal,mark=star,dashed\\% oriSEEDS
+	%orange,mark=star,dashed\\% reSEEDS
+	% SEEDS3Dn
+	% DASP
+	%green!40!black,mark=star,dashed\\% TPS
+	%violet,mark=star,dashed\\% CRS
+	% DCRS
+	% VCCS
+}
+\pgfplotscreateplotcyclelist{runtime nyu low}{%
+	%teal,mark=star,solid\\% NC
+	orange,mark=star,solid\\% FH
+	%red,mark=star,solid\\% QS
+	%green!40!black,mark=star,solid\\% TP
+	blue,mark=star,solid\\% SLIC
+	black,mark=star,solid\\% SLIC3D
+	%violet,mark=star,solid\\% CIS
+	%cyan,mark=star,solid\\% ERS
+	%brown,mark=star,solid\\% PB
+	teal,mark=star,dashed\\% oriSEEDS
+	orange,mark=star,dashed\\% reSEEDS
+	red,mark=star,dashed\\% SEEDS3Dn
+	blue,mark=star,dashed\\% DASP
+	%green!40!black,mark=star,dashed\\% TPS
+	%violet,mark=star,dashed\\% CRS
+	% DCRS
+	brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{runtime nyu high}{%
+	%teal,mark=star,solid\\% NC
+	%orange,mark=star,solid\\% FH
+	red,mark=star,solid\\% QS
+	green!40!black,mark=star,solid\\% TP
+	%blue,mark=star,solid\\% SLIC
+	% SLIC3D
+	violet,mark=star,solid\\% CIS
+	cyan,mark=star,solid\\% ERS
+	%brown,mark=star,solid\\% PB
+	%teal,mark=star,dashed\\% oriSEEDS
+	%orange,mark=star,dashed\\% reSEEDS
+	%red,mark=star,dashed\\% SEEDS3Dn
+	%blue,mark=star,dashed\\% DASP
+	%green!40!black,mark=star,dashed\\% TPS
+	%violet,mark=star,dashed\\% CRS
+	% DCRS
+	%brown,mark=star,dashed\\% VCCS
+}
+\pgfplotscreateplotcyclelist{1it runtime bsd}{%
+	orange,mark=star,solid\\% FH
+	blue,mark=star,solid\\% SLIC
+	teal,mark=star,dashed\\% oriSEEDS
+	black,mark=star,dashed\\% reSEEDSmp
+	orange,mark=star,dashed\\% reSEEDS
+}
+\pgfplotscreateplotcyclelist{1it runtime nyu}{%
+	orange,mark=star,solid\\% FH
+	blue,mark=star,solid\\% SLIC
+	teal,mark=star,dashed\\% oriSEEDS
+	black,mark=star,dashed\\% reSEEDSmp
+	orange,mark=star,dashed\\% reSEEDS
+	red,mark=star,dashed\\% SEEDS3D
+}
+
+\pgfplotsset{every axis/.append style={tick label style={/pgf/number format/fixed},font=\scriptsize,ylabel near ticks,xlabel near ticks,grid=major}}
+\pgfplotstableset{%
+    highlightrow/.style={%
+        postproc cell content/.append code={%
+           \count0=\pgfplotstablerow
+            \advance\count0 by1
+            \ifnum\count0=#1
+            %\pgfkeysalso{@cell content/.add={$\bf}{$}}
+            \pgfkeysalso{@cell content=\textbf{##1}}%
+            \fi
+        },
+    },
+}
+\pgfplotstableset{%
+  cignore row/.style={
+    row predicate/.append code={
+      \ifnum#1=\pgfplotstablerow\relax
+        \pgfplotstableuserowfalse
+      \fi
+    }
+  },
+}
+
+\usepackage{longtable}
+
+\usepackage{listings}  % Typeset source code listings using LaTeX.
+\lstloadlanguages{C++}
+\lstset{language=C++}
+
+\usepackage{graphicx}
+
+% scalign factors used to show three images beneath each other for BSDS and NYUDepth
+\newcommand{\scaletwothreebsd}{0.16}
+\newcommand{\scaletwothreenyu}{0.115}
+\newcommand{\scalethreebsd}{0.265}
+\newcommand{\scalethreenyu}{0.21}
+\newcommand{\scalefiveoriginalnyu}{0.11}
+\newcommand{\scalefivebsd}{0.15225}
+\newcommand{\scalefivebsdtest}{0.19}
+\newcommand{\scalefivenyu}{0.12}
+\usepackage{url}
+
+% http://tex.stackexchange.com/questions/3033/forcing-linebreaks-in-url
+\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
+\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j%
+\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t%
+\do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D%
+\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N%
+\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X%
+\do\Y\do\Z}
+
+\setlength{\headheight}{14.5pt}
+\addtolength{\headwidth}{0.5\marginparwidth}
+\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\nouppercase{\sffamily\rightmark}}}
+\rhead[\fancyplain{}{\nouppercase{\sffamily\leftmark}}]{\fancyplain{}{\thepage}}
+
+\newcommand{\blankpage}
+{
+  \clearpage{\pagestyle{empty}\cleardoublepage}
+}
+
+\graphicspath{
+	{pictures/}
+}
+
+\setlength{\fboxsep}{0.3cm}
+\newlength{\gw}
+
+\newcommand{\graphik}[2][1]{\includegraphics[width=#1\gw]{#2}}
+
+\newcommand{\rahmengraphik}[2][1]
+{
+	\setlength{\gw}{#1\textwidth}
+	\addtolength{\gw}{-2\fboxsep}
+	\addtolength{\gw}{-2\fboxrule}
+	\centering
+        \graphik{#2}
+%%	\framebox[#1\textwidth]{\graphik{#2}}
+}
+
+\renewcommand{\lstlistlistingname}{List of Listings}
+\lstset{ %
+language=C++,
+basicstyle=\footnotesize,
+numbers=left,
+numberstyle=\footnotesize,
+stepnumber=1,
+numbersep=5pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=2,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+escapeinside={\%*}{*)}
+}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\theoremstyle{definition}
+
+\makeglossary
+%\makeindex
+
+\usepackage{xspace} % context sensitive space after macros
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{{e.g}\onedot} \def\Eg{{E.g}\onedot}
+\def\ie{{i.e}\onedot} \def\Ie{{I.e}\onedot}
+\def\cf{{c.f}\onedot} \def\Cf{{C.f}\onedot}
+\def\etc{{etc}\onedot} \def\vs{{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{{et al}\onedot}
+\def\zB{z.B\onedot} \def\ZB{Z.B\onedot}
+\def\dh{d.h\onedot} \def\Dh{D.h\onedot}
+
+\begin{document}
+
+\frontmatter
+\include{titlepage}
+\blankpage
+
+{ % changing "parskip" only here
+% \setlength{\parskip}{0.2ex plus0.1ex minus0.1ex}
+
+\pagestyle{fancyplain}
+\tableofcontents
+\newpage
+
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
+
+%\lstlistoflistings
+%\addcontentsline{toc}{chapter}{List of Listings}
+%\newpage
+
+\blankpage
+}
+
+\mainmatter
+
+\include{introduction}
+\include{related-work}
+\include{superpixel-segmentation}
+\include{superpixel-segmentation-depth}
+\include{seeds-depth}
+\include{datasets}
+\include{evaluation}
+\include{conclusion}
+\@openrighttrue\makeatother
+
+\blankpage
+\begin{appendices}
+	\include{appendix-bsb}
+	\include{appendix-evaluation}
+\end{appendices}
+
+\backmatter
+
+\nocite{*}
+\bibliographystyle{alpha}
+\bibliography{thesis}
+
+\end{document}
