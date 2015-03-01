@@ -20,9 +20,9 @@ This repository contains the bachelor thesis "Superpixel Segmentation using Dept
 
 ## File Index
 
-* [Code](code/README.md)
-* [Paper](paper/README.md)
-* [Slides](slides/README.md)
+* [Code](code/)
+* [Paper](paper/)
+* [Slides](slides/)
 
 ## License
 
