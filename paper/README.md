@@ -1,7 +1,7 @@
-# Readme
+# Superpixel Segmentation using Depth Information / Paper
 
-This folder contains the final paper - including some "non-final" passages which have been commented out. Some notes:
+LaTex source of the bachelor thesis "Superpixel Segmentation using Depth Information". **Note: The thesis was compiled using MikTeX on Windows 7 64bit.**
 
-* `thesis.tex`: the paper as handed in.
-* `thesis-online.tex`: a version publsihed on my webpage excluding appendix B; dedication, acknowledgements etc. have been removed.
-* `appendix-evaluation-online`: appendix B (the evaluation results) as published on my webpage.
+## License
+
+This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit [http://creativecommons.org/licenses/by/4.0/](http://creativecommons.org/licenses/by/4.0/).
