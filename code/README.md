@@ -6,8 +6,9 @@ The code provided as part of the bachelor thesis "Superpixel Segmentation using 
 * Superpixel library containing several of the evaluated algorithms: [Superpixels Revisited](https://github.com/davidstutz/superpixels-revisited).
 * Benchmark used for evaluation of all superpixel algorithms: [Extended Berkeley Segmentation Benchmark](https://github.com/davidstutz/extended-berkeley-segmentation-benchmark).
 * Tool for working with the NYU Depth Dataset V2 [3]: [NYU Depth V2 Tools](https://github.com/davidstutz/nyu-depth-v2-tools).
+* Interactive plots of comparison based on [nvd3](http://nvd3.org/): [nvd3 Superpixel Comparison](https://github.com/davidstutz/nvd3-superpixel-comparison).
 
-## Usage
+# Usage
 
 Evaluation on the [Berkeley Segmentation Dataset (BSDS500)](http://www.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html) [4] or on the [NYU Depth Dataset V2 (NYUV2)](http://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) [3]:
 
@@ -25,6 +26,7 @@ All command line tools in `superpixels-revisited` provide a `--csv` option in or
 * [Superpixels Revisited](https://github.com/davidstutz/superpixels-revisited)
 * [Extended Berkeley Segmentation Benchmark](https://github.com/davidstutz/extended-berkeley-segmentation-benchmark)
 * [NYU Depth V2 Tools](https://github.com/davidstutz/nyu-depth-v2-tools)
+* [nvd3 Superpixel Comparison](https://github.com/davidstutz/nvd3-superpixel-comparison)
 
 ## References
 

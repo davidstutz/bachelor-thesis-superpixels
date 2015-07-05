@@ -10,3 +10,6 @@
 [submodule "code/superpixels-revisited"]
 	path = code/superpixels-revisited
 	url = https://github.com/davidstutz/superpixels-revisited.git
+[submodule "code/nvd3-superpixel-comparison"]
+	path = code/nvd3-superpixel-comparison
+	url = https://github.com/davidstutz/nvd3-superpixel-comparison
