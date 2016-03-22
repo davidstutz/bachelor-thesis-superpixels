@@ -18,6 +18,22 @@ This repository contains the bachelor thesis "Superpixel Segmentation using Dept
         howpublished = {http://davidstutz.de/},
     }
 
+Also consider citing the corresponding GCPR 2015 paper (which is available [here](http://davidstutz.de/projects/superpixelsseeds/) or [here](https://github.com/davidstutz/gcpr2015-superpixels)):
+
+	@incollection{Stutz:2015,
+		title = {Superpixel Segmentation: An Evaluation},
+		author = {Stutz, David},
+		year = {2015},
+		isbn = {978-3-319-24946-9},
+		booktitle = {Pattern Recognition},
+		volume = {9358},
+		series = {Lecture Notes in Computer Science},
+		editor = {Gall, Juergen and Gehler, Peter and Leibe, Bastian},
+		doi = {10.1007/978-3-319-24947-6_46},
+		publisher = {Springer International Publishing},
+		pages = {555 -- 562},
+	}
+
 ## File Index
 
 * [Code](code/)
